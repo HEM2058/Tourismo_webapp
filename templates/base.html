@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tourismo - User Mode Selection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+   
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+   
+   <style>
+      /* Global Styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: #ffffff;
+        color: #000000;
+        text-align: center;
+        padding: 20px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .header-container {
+        display: flex;
+        align-items: center;
+      }
+     
+      h1 {
+        font-size: 32px;
+        margin-right: 10px;
+      }
+      .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin-top: 50px;
+      }
+      .card {
+        width: 30%;
+        margin-bottom: 20px;
+        background-color: #02066F;
+        color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        text-align: left;
+        position: relative;
+      }
+      .card-icon-container {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 60px;
+        background-color: #ffffff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+      }
+      .card-icon-container i {
+        font-size: 30px;
+        color: #02066F;
+      }
+      /* hover */
+      .header-container:hover .fa-map-marker-alt {
+  transform: rotate(360deg);
+  transition: transform 0.5s ease-in-out;
+}
+
+  /* Global Styles */
+  /* ... */
+  .header-container:hover .fa-map-marker-alt {
+    transform: rotate(360deg);
+    transition: transform 0.5s ease-in-out;
+  }
+
+
+      h2 {
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+      h3 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+      p {
+        margin-bottom: 20px;
+      }
+      button {
+        background-color: #02066F;
+        color: #ffffff;
+        border: 3px solid rgb(211, 225, 226);
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      button:hover {
+        background-color: #2a2f81;
+      }
+     
+  .normal-btn:hover {
+    background-color: #e0e0e0;
+    color: #1e2a78;
+  }
+
+.tourist-btn:hover {
+    background-color: #e0e0e0;
+    color: #1e2a78;
+}
+.guider-btn:hover {
+    background-color: #e0e0e0;
+    color: #1e2a78;
+}
+
+/* Media Queries */
+@media only screen and (max-width: 768px) {
+.card {
+width: 100%;
+}
+}
+
+.card:hover .card-icon-container i {
+  animation: vibration 0.5s linear infinite;
+}
+
+@keyframes vibration {
+  0% { transform: translate(0, 0); }
+  10% { transform: translate(-2px, -2px); }
+  20% { transform: translate(2px, -2px); }
+  30% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, 2px); }
+  50% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, -2px); }
+  70% { transform: translate(-2px, 2px); }
+  80% { transform: translate(2px, 2px); }
+  90% { transform: translate(-2px, -2px); }
+  100% { transform: translate(0, 0); }
+}
+
+</style>
+
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <h1 >Tourismo</h1>
+      <i class="fas fa-map-marker-alt"></i>
+    </div>
+  </header>
+  <main>
+    <h2>User Mode</h2>
+    <div class="card-container">
+      <div class="card" style="background-color: #02066F;">
+        <div class="card-icon-container">
+          <i class="fas fa-user"></i>
+        </div>
+        <h3>Normal</h3>
+        <p>Choose this mode if you are a regular user who wants to explore different places.</p>
+        <form id="form1" action="{% url 'index1' %}" method="get">
+          <button class="normal-btn" type="submit">Select</button>
+        </form>
+      </div>
+      <div class="card" style="background-color: #02066F;">
+        <div class="card-icon-container">
+          <i class="fas fa-map-marked-alt"></i>
+        </div>
+        <h3>Tourist</h3>
+        <p>Choose this mode if you are a tourist who wants to visit famous tourist spots.</p>
+        <form id="form2"  action="{% url 'tsignup' %}" method="get">
+          <button class="tourist-btn" type="submit">Select</button>
+        </form>
+      </div>
+      <div class="card" style="background-color: #02066F;">
+        <div class="card-icon-container">
+          <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <h3>Guide</h3>
+        <p>Choose this mode if you are a local who can guide others to explore the city.</p>
+        <!-- <button class="guider-btn">Select</button> -->
+        <form id="form3"  action="{% url 'gsignup' %}" method="get">
+          <button class="guider-btn" type="submit">Select</button>
+        </form>
+      </div>
+    </div>
+  </main>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script>
+   $('.normal-btn').on('click', function(event) {
+  event.preventDefault(); // Prevent the default form submission behavior
+  swal({
+    title: "Are you sure you want to select Normal Mode?",
+    buttons: ["Cancel", "OK"],
+  }).then((value) => {
+    if (value) {
+      // OK button clicked
+      // Process further here
+      console.log("Normal Mode Selected");
+      $('#form1').submit(); // Submit the form programmatically after processing
+    } else {
+      // Cancel button clicked (or clicked outside the dialog)
+      // Interrupt the process here
+      console.log("Process Interrupted");
+    }
+  });
+});
+
+$('.tourist-btn').on('click', function(event) {
+  event.preventDefault(); // Prevent the default link behavior
+  swal({
+    title: "Are you sure you want to select Tourist Mode?",
+    buttons: ["Cancel", "OK"],
+  }).then((value) => {
+    if (value) {
+      // OK button clicked
+      // Process further here
+      console.log("Tourist Mode Selected");
+      $('#form2').submit(); // Submit the form programmatically after processing
+    } else {
+      // Cancel button clicked (or clicked outside the dialog)
+      // Interrupt the process here
+      console.log("Process Interrupted");
+     
+    }
+  });
+});
+
+$('.guider-btn').on('click', function(event) {
+  event.preventDefault(); // Prevent the default link behavior
+  swal({
+    title: "Are you sure you want to select Guider Mode?",
+    buttons: ["Cancel", "OK"],
+  }).then((value) => {
+    if (value) {
+      // OK button clicked
+      // Process further here
+      console.log("Guider Mode Selected");
+      $('#form3').submit(); // Submit the form programmatically after processing
+    } else {
+      // Cancel button clicked (or clicked outside the dialog)
+      // Interrupt the process here
+      console.log("Process Interrupted");
+    }
+  });
+});
+
+
+
+
+  </script>
+</body>
+</html>
+
+
+
