@@ -761,42 +761,6 @@ body.modal-open #publish-plan-form {
    
 
 
-<div id="popup-overlay">
-  <div style="display: none;" id="publish-plan-form">
-    <button class="close">&times;</button>
-    <h2>Publish Plan</h2>
-    <form id="myForm">
-      <label for="pickuppoint">
-        <i class="fas fa-map-marker-alt"></i> Pick up point:
-      </label>
-      <input type="text" id="pickuppoint" class="query-input4" name="pickuppoint" placeholder="current location">
-      <label for="destination">
-        <i class="fas fa-map-marker-alt"></i> Destination:
-      </label>
-      <input type="text" id="destination" class="query-input3" name="destination" required>
-      <label for="date"><i class="fas fa-clock"></i> Travel Date:</label>
-      <input type="datetime-local" id="date" name="date" required>
-
-      <label for="budget"><i class="fas fa-dollar-sign"></i> Budget:</label>
-     
-          
-          <select id="currency" name="currency">
-            <option selected value="NEG">Negotation</option>
-            <option value="NPR">Nepalese Rupees (NPR)</option>
-            <option value="USD">US Dollars (USD)</option>
-          </select>
-          <input style="display: none;" type="number" id="budget-amount" name="budget-amount" min="0" step="10">
-
-      
-
-      
-      <button type="submit" id="post-plan-btn" class="post">Post Plan</button>
-    </form>
-    <p style="font-size: 12px; font-style: italic; margin-top: 10px;">Upon submitting your plan, it will become visible to experienced guides who will reach out to you shortly to provide their assistance.</p>
-  </div>
-</div>
-
-
 
 
   
@@ -1076,8 +1040,7 @@ const Destination = document.querySelector('#destination');
 const queryInput = document.querySelector('.query-input');
 const queryInput1 = document.querySelector('.query-input1');
 const queryInput2 = document.querySelector('.query-input2');
-const queryInput3 = document.querySelector('.query-input3');
-const queryInput4 = document.querySelector('.query-input4');
+
 
 // Destination.addEventListener('keyup', (event) => {
 //   if (event.key === 'Enter') {
@@ -1124,12 +1087,7 @@ queryInput1.addEventListener('input', () => {
 queryInput2.addEventListener('input', () => {
   search(queryInput2.value,2);
 });
-queryInput3.addEventListener('input', () => {
-  search(queryInput3.value,3);
-});
-queryInput4.addEventListener('input', () => {
-  search(queryInput4.value,4);
-});
+
 function search(query,boolen) {
   console.log(query)
   // const query = searchInput.value;
@@ -1173,14 +1131,6 @@ function openPlace(place,boolen) {
     yourDestinationInput.value = `${lat}, ${lon}`;
    
   }
-  else if (boolen==3){
-   
-    queryInput3.value = `${lat}, ${lon}`;
-  }
-  else if (boolen==4){
-   
-   queryInput4.value = `${lat}, ${lon}`;
- }
   
   // zoom to the selected place on the map
   map.flyTo([lat, lon], 15, {

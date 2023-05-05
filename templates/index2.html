@@ -652,7 +652,31 @@ body.modal-open #publish-plan-form {
   transform: translate(-50%, -50%);
   z-index: 9999;
 }
+/* 
+Notification popup */
+#notification-popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  display: none;
+}
 
+#notification-popup p {
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+#close-popup {
+  background-color: #eee;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  float: right;
+}
 
 
 
@@ -806,8 +830,12 @@ body.modal-open #publish-plan-form {
 
 
 
+<!-- Notification popup -->
+<div id="notification-popup">
+  <p id="notification-message"></p>
+  <button id="close-popup">Close</button>
+</div>
 
-  
   
 </div>
 
@@ -834,6 +862,7 @@ body.modal-open #publish-plan-form {
   
   var scaleControl;
   var zoomControl;
+  console.log({{message}})
   const preloader = document.querySelector(".preloader-container");
  
     $(document).ready(function() {
@@ -1355,6 +1384,7 @@ Close.addEventListener('click', function(){
 
 
 
+
         // Toggle menu bar
         $('#menu-btn').click(function() {
             $('#menu-bar').toggleClass('show');
@@ -1381,6 +1411,36 @@ Close.addEventListener('click', function(){
         });
         
     });
+
+// Notification popup
+const notificationPopup = document.getElementById('notification-popup');
+const notificationMessage = document.getElementById('notification-message');
+const closePopupButton = document.getElementById('close-popup');
+
+function showNotificationPopup(message) {
+  notificationMessage.textContent = message;
+  notificationPopup.style.display = 'block';
+}
+
+function hideNotificationPopup() {
+  notificationPopup.style.display = 'none';
+}
+
+const notificationButton = document.querySelector('.Notification-btn');
+
+notificationButton.addEventListener('click', function(event) {
+  event.preventDefault();
+  const message = "{{ message }}"; // The message is rendered from Django
+  console.log(message)
+  showNotificationPopup(message);
+});
+
+closePopupButton.addEventListener('click', function() {
+  hideNotificationPopup();
+});
+
+
+    
 // alert display
     {% if msg %}
     swal({

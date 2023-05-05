@@ -30,7 +30,11 @@ urlpatterns = [
     path('yourplans/<int:pk>',views.YourPlans,name="yourplans"),
 
     #Accepting guide request
-    path('guide_request/<int:guide_id>/plan_expired/<int:plan_id>', views.accept_guide_request, name='accept_guide_request')
+    path('guide_request/<int:guide_id>/plan_expired/<int:plan_id>', views.accept_guide_request, name='accept_guide_request'),
+
+    #Applied plans rendering at guide page
+
+    path('appliedplans/<int:pk>',views.AppliedPlans,name="appliedplans")
 ]
 from django.conf.urls.static import static
 from django.conf import settings

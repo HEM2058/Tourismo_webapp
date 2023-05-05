@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'tourismo',
     'channels',
     'channels_redis',
+    # 'tourismo.filters.py'
 
 
 ]

@@ -1,3 +1,5 @@
+{% load filters%}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -152,8 +154,9 @@
 </head>
 <body>
   
+ 
     {% if plan %}
-
+   
     {% for p in plan %}
 			<div class="course">
 				<div class="course-preview">
@@ -182,13 +185,27 @@
 						<h5>Contact: {{guide.contact}}</h2>
 						<h5>Email: {{guide.email}}</h2>
 						<h5>Country: {{guide.country}}</h5>
-						<h5>Sex: {{guide.male}}</h5>
-                       
+						<h5>Sex: {{guide.sex}}</h5>
+                   
+                
+ {% if p|has_guide_request:guide %}
+ <button style="background-color: gold;" type="submit" class="btn">Accepted</button>
+{% else %}
+    <form action="{% url 'accept_guide_request' guide_id=guide.id plan_id=p.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn">Accept</button>
+    </form>
+{% endif %} 
+
+
+
+
+<!--                          
                             <form action="{% url 'accept_guide_request' guide_id=guide.id plan_id=p.id %}" method="post">
                                 {% csrf_token %}
                                 <button type="submit" class="btn">Accept</button>
                             </form>
-                   
+                    -->
 						
 					</div>
                     {% endfor %}
@@ -217,7 +234,7 @@
         <h1>You have not posted any plan yet !</h1>
     </center>
    {% endif %}
-    
+   
 
 </body>
 </html>

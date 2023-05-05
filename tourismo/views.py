@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect ,HttpResponse
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import messages
+
 
 # Create your views here.
 
@@ -144,8 +146,8 @@ def create_plan(request,pk):
             budget_cash=budget_cash
         )
         
-        msg = "Plan has been successfully posted !"
-        return render(request, "index2.html",{'msg':msg})
+        # msg = "Plan has been successfully posted !"
+        return redirect('yourplans',pk=pk)
   
     return render(request, "index2.html")
 
@@ -156,19 +158,23 @@ def create_plan(request,pk):
 def add_guide(request, plan_id, guide_id):
     plan = Plan.objects.get(id=plan_id)
     guide = Guide.objects.get(id=guide_id)
+  
     guide_request, created = GuideRequest.objects.get_or_create(plan=plan, guide=guide)
+    session_id = request.session.get('id')
     if created:
-        msg = "You have applied for that plan! Please wait for tourist response"
-        return render(request, 'index3.html',{'msg':msg})
+          messages.success(request, f"The guide {guide.uname} has applied for the plan.")
+          return redirect('appliedplans', pk=session_id)
     else:
-        msg = "You have already applied for that plan!"
-        return render(request, 'index3.html',{'msg':msg})
+          return redirect('appliedplans', pk=session_id)
     
-
 def YourPlans(request,pk):
     tourist = Tourist.objects.get(id=pk)
-    plans = Plan.objects.filter(tourist=tourist).order_by('-datetime')
-    return render(request,'Tourist/plans.html',{'plan':plans})
+    if request.session.get('id') != pk:
+        return HttpResponse('<h1>You are not authorized to view this page !</h1>')
+    else:
+        plans = Plan.objects.filter(tourist=tourist).order_by('-datetime')
+        return render(request,'Tourist/plans.html',{'plan':plans})
+
 
 
 def accept_guide_request(request,guide_id,plan_id):
@@ -180,3 +186,12 @@ def accept_guide_request(request,guide_id,plan_id):
     session_id = request.session.get('id')
     # msg = f"You have accepted the request made by {guide.uname}! Please rate the {guide.uname} after your tour."
     return redirect('yourplans', pk=session_id)
+
+
+def AppliedPlans(request,pk):
+    guide = Guide.objects.get(id=pk)
+    guiderequest = GuideRequest.objects.filter(guide=guide)
+    if request.session.get('id')!=pk:
+          return HttpResponse('<h1>You are not authorized to view this page !</h1>')
+    else:
+          return render(request,'Guide/plans.html',{ 'guiderequest':guiderequest})
