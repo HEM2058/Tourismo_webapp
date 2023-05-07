@@ -678,8 +678,108 @@ Notification popup */
   float: right;
 }
 
+/* popup for request guide */
+
+/* design for plan popup */
+.popup-content {
+    max-width: 400px;
+}
+
+.popup-info {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.popup-label {
+    width: 100px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.popup-value {
+    flex: 1;
+    word-break: break-all;
+}
+
+.apply-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #008CBA;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.apply-button:hover {
+    background-color: #0077B5;
+}
 
 
+@media only screen and (max-width: 600px) {
+    .popup-content {
+        max-width: 100%;
+    }
+
+    .popup-label {
+        width: 50%;
+    }
+}
+
+/* Notification bar */
+.popup-menu {
+  position: absolute;
+  top: 50px; /* adjust as needed */
+  left: 120px;
+  z-index: 1; /* make sure popup is on top of other elements */
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 10px;
+  display: none;
+  width: 200px;
+  height: 400px;
+  overflow-y: scroll; /* add scroll bar if content is larger than the height */
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-content h5 {
+  margin: 0 0 5px;
+}
+
+.notification-time {
+  margin: 0;
+  font-size: 12px;
+  color: #999;
+}
+
+
+.popup-menu.show {
+  display: block;
+  transform: translateX(10px);
+}
+
+
+@media only screen and (max-width: 500px) {
+    .popup-menu {
+        max-height: 300px;
+    }
+
+   
+}
 
     </style>
 </head>
@@ -709,13 +809,18 @@ Notification popup */
  <div class="menu-bar" id="menu-bar">
    <!-- Menu items -->
    <a href="#" class="menu-item active"><i class="fas fa-map-marker-alt"></i> Tourismo</a>
-   <a href="#" class="menu-item Notification-btn"><i class="fas fa-bell notification"></i> Notification</a>
+   <!-- <a href="#" id="Notification-btn" class="menu-item Notification-btn"><i class="fas fa-bell notification"></i> Notification</a> -->
+   <a href="#" id="Notification-btn" class="menu-item Notification-btn">
+    <i class="fas fa-bell notification"></i> Notification
+    <span style="font-weight: bold; font-size: 1.2em; color:white ; margin-bottom: 2px; background-color:#7a59f4 ; border-radius: 4px;" class="notification-count"></span>
+  </a>
+   
    <a href="#" class="menu-item post-plan-btn"><i class="fas fa-upload"></i> Post Plan</a>
   
     <a href="{% url 'yourplans' pk=request.session.id %}" class="menu-item post-plan-btn"><i class="fas fa-calendar-alt"></i> your Plans</a>
  
  
-   <a href="#" class="menu-item history-btn"><i class="fas fa-history"></i> History</a>
+   <!-- <a href="#" class="menu-item history-btn"><i class="fas fa-history"></i> History</a> -->
    <a href="#" class="menu-item setting-btn"><i class="fas fa-cog"></i> Settings</a>
    <a href="#" class="menu-item Help-btn"><i class="fas fa-question-circle"></i> Help</a>
    <a href="#" class="menu-item Feedback-btn"><i class="fas fa-comment-alt"></i> Feedback</a>
@@ -727,6 +832,23 @@ Notification popup */
        <a href="{% url 'index1' %}" class="menu-item user-mode-btn normal " ><i class="fas fa-user"></i> Normal</a>
        <a href="{% url 'gsignup' %}" class="menu-item user-mode-btn guider"><i class="fas  fa-chalkboard-teacher"></i> Guide</a>
    </div>
+  <!-- Notification popup -->
+
+  <div class="popup-menu leaflet-control" id="notification-menu">
+  
+
+        <div class="notification-item">
+          <div class="notification-content">
+            <h5>Notifications</h5>
+            <p class="message"></p>
+            <p class="notification-time"></p>
+          </div>
+        </div>
+     
+
+        <p class="emptynotification">No notifications found.</p>
+ 
+  </div>
   
    </div>
    <!-- Search bar -->
@@ -830,11 +952,7 @@ Notification popup */
 
 
 
-<!-- Notification popup -->
-<div id="notification-popup">
-  <p id="notification-message"></p>
-  <button id="close-popup">Close</button>
-</div>
+
 
   
 </div>
@@ -857,9 +975,12 @@ Notification popup */
 <script src="{% static 'leaflet-custom marker/leaflet.awesome-markers.min.js' %}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
 <!-- Custom JS -->
 <script>
-  
+
+
   var scaleControl;
   var zoomControl;
   console.log({{message}})
@@ -953,8 +1074,8 @@ scaleControl= L.control.scale({metric: true}).addTo(map);
   
 // receiving  the guide location
 // Set up a WebSocket connection
-const socket = new WebSocket('ws://localhost:8000/ws/tourist/');
-
+// const socket = new WebSocket('wss://localhost:8000/wss/tourist/');
+const socket = new WebSocket('wss://' + window.location.host + '/wss/tourist/');
 // Create an object to keep track of the markers for each tourist
 const touristMarkers = {};
 
@@ -996,7 +1117,72 @@ socket.onmessage = function(event) {
 
   // Add the marker to the map and store it in the touristMarkers object
   marker.addTo(map)
-    .bindPopup(`${guide_uname}`);
+  .on('click', function () {
+      $.ajax({
+          url: `/get_guide_info/${guide_id}/`,
+          type: 'GET',
+          success: function (data) {
+              const guideInfo = `
+              <div class="popup-content">
+            <h4>${data.uname}</h4>
+            <div class="popup-info">
+                <div class="popup-label">Email:</div>
+                <div class="popup-value">${data.email}</div>
+            </div>
+            <div class="popup-info">
+                <div class="popup-label">Contact:</div>
+                <div class="popup-value">${data.contact}</div>
+            </div>
+            <div class="popup-info">
+                <div class="popup-label">Sex:</div>
+                <div class="popup-value">${data.sex}</div>
+            </div>
+            <form action="" method="get">
+              
+       <button class="apply-button" id="guide-request-button">Request for a ride</button>
+       </form>
+        </div>`
+              
+              marker.bindPopup(guideInfo).openPopup();
+           // Add event listener to the "Request for a ride" button
+              const guideRequestButton = document.getElementById('guide-request-button');
+              guideRequestButton.addEventListener('click', function(event) {
+                  event.preventDefault(); // Prevent form submission
+                  const guideRequestId = guide_id;
+                  const csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+                  const url = `/create_guide_request/${guide_id}/`; // Include guide ID in URL
+
+                  // Send AJAX request to create the guide request
+                  $.ajax({
+                      url: `/create_guide_request/${guide_id}/`,
+                      type: 'POST',
+                      headers: { 'X-CSRFToken': csrfToken },
+                      success: function(data) {
+                          // Show success message to the user
+                          // alert('Guide request created successfully!');
+                          swal({
+                               icon: 'success',
+                               title: 'Great!',
+                                text: 'You have requested ' + guide_uname + ' for ride.',
+                               });
+                      },
+                      error: function(xhr, status, error) {
+                          // Show error message to the user
+                          // console.log('Error:', xhr, status, error);
+                          // alert('Failed to create guide request.');
+                          swal({
+                           icon: 'error',
+                           title: 'Oops...',
+                           text: 'Failed to request the guide.Please report us the problem from help section',
+                        });
+                      }
+                  });
+              });
+
+              
+          }
+      });
+  });
   touristMarkers[guide_id] = marker;
 };
 
@@ -1413,31 +1599,88 @@ Close.addEventListener('click', function(){
     });
 
 // Notification popup
-const notificationPopup = document.getElementById('notification-popup');
-const notificationMessage = document.getElementById('notification-message');
-const closePopupButton = document.getElementById('close-popup');
 
-function showNotificationPopup(message) {
-  notificationMessage.textContent = message;
-  notificationPopup.style.display = 'block';
-}
+// const notificationBtn = document.getElementById('Notification-btn');
+// const notificationMenu = document.getElementById('notification-menu');
 
-function hideNotificationPopup() {
-  notificationPopup.style.display = 'none';
-}
+// notificationBtn.addEventListener('click', function() {
+//   notificationMenu.classList.toggle('show');
+// });
 
-const notificationButton = document.querySelector('.Notification-btn');
+// document.addEventListener('click', function(event) {
+//   const isClickInside = notificationMenu.contains(event.target) || notificationBtn.contains(event.target);
+//   if (!isClickInside) {
+//     notificationMenu.classList.remove('show');
+//   }
+// });
+$(document).ready(function() {
+  const notificationBtn = $('#Notification-btn');
+  const notificationMenu = $('#notification-menu');
+  const notificationContent = notificationMenu.find('.notification-content');
+  const notificationCounter = document.querySelector('.notification-count');
+  
+  let counter = 0;
 
-notificationButton.addEventListener('click', function(event) {
-  event.preventDefault();
-  const message = "{{ message }}"; // The message is rendered from Django
-  console.log(message)
-  showNotificationPopup(message);
+
+  const socket = new WebSocket('wss://' + window.location.host + '/wss/touristNotification/{{ request.session.id }}/');
+  socket.onmessage = function(event) {
+      const message = JSON.parse(event.data);
+      alert(message.message);
+      counter += 1;
+      notificationCounter.innerHTML = counter;
+      console.log(counter)
+  };
+
+
+  notificationBtn.on('click', function() {
+    notificationMenu.toggleClass('show');
+    if (notificationMenu.hasClass('show')) {
+      notificationCounter.innerHTML = '';
+      notificationContent.html('');
+      $.ajax({
+        url: '/get_tourist_notifications/',
+        type: 'GET',
+        success: function(response) {
+          if (response.notifications) {
+            for (const notification of response.notifications) {
+              $('.emptynotification').hide();
+              const notificationItem = $('<div>').addClass('notification-item');
+              const notificationContent = $('<div>').addClass('notification-content');
+              const message = $('<p>').addClass('message').text(notification.message);
+              notificationItem.append(notificationContent.append(message));
+              const notificationTime = $('<p>').addClass('notification-time').text(moment(notification.created_at).fromNow());
+              notificationContent.append(notificationTime);
+              notificationMenu.append(notificationItem);
+            }
+            counter = 0;
+            notificationCounter.innerHTML = '';
+          } else {
+            const noNotification = $('<p>').text('No notifications found.');
+            const emptyNotification = $('.emptynotification');
+            emptyNotification.html(noNotification);
+            notificationCounter.innerHTML = '';
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error(xhr.statusText);
+        }
+      });
+    }
+  });
+
+  $(document).on('click', function(event) {
+    const isClickInside = notificationMenu.is(event.target) || notificationBtn.is(event.target);
+    if (!isClickInside) {
+      notificationMenu.removeClass('show');
+      counter = 0;
+      notificationCounter.innerHTML = '';
+    }
+  });
 });
 
-closePopupButton.addEventListener('click', function() {
-  hideNotificationPopup();
-});
+
+
+
 
 
     

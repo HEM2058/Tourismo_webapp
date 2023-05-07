@@ -34,7 +34,16 @@ urlpatterns = [
 
     #Applied plans rendering at guide page
 
-    path('appliedplans/<int:pk>',views.AppliedPlans,name="appliedplans")
+    path('appliedplans/<int:pk>',views.AppliedPlans,name="appliedplans"),
+
+    # Ajax for reveal guide information
+    path('get_guide_info/<int:guide_id>/', views.get_guide_info_ajax, name='get_guide_info_ajax'),
+
+    #Getting application notiication at tourist page
+    path('get_tourist_notifications/', views.get_Tnotifications, name='get_tourist_notifications'),
+
+    #Drive reauest to the guide
+    path('create_guide_request/<int:guide_id>/', views.create_guide_request, name='create_guide_request'),
 ]
 from django.conf.urls.static import static
 from django.conf import settings

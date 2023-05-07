@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 # Create your models here.
 
 
@@ -59,4 +60,16 @@ class GuideRequest(models.Model):
     accepted = models.BooleanField(default=False)
     
    
-# user_id=models.ForeignKey(UserMaster,on_delete=models.CASCADE)
+class TouristNotification(models.Model):
+    tourist = models.IntegerField(null=True)
+    message = models.CharField(max_length=255)
+    created_at = models.DateTimeField(default=timezone.now)
+    expire_at = models.DateTimeField()
+
+    def is_expired(self):
+        return timezone.now() > self.expire_at
+
+class TouristRequest(models.Model):
+       tourist = models.ForeignKey(Tourist,on_delete=models.CASCADE)
+       guide = models.ForeignKey(Guide,on_delete=models.CASCADE,null=True)
+       date_requested = models.DateTimeField(auto_now_add=True)

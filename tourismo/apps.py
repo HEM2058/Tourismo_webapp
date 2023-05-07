@@ -7,3 +7,6 @@ class TourismoConfig(AppConfig):
 
     def ready(self):
           import tourismo.signals  # Import signals module
+
+
+

@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect ,HttpResponse
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
-
+from django.http import JsonResponse
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 # Create your views here.
 
@@ -155,6 +157,18 @@ def create_plan(request,pk):
 #Guide application request
 
 
+# def add_guide(request, plan_id, guide_id):
+#     plan = Plan.objects.get(id=plan_id)
+#     guide = Guide.objects.get(id=guide_id)
+  
+#     guide_request, created = GuideRequest.objects.get_or_create(plan=plan, guide=guide)
+#     session_id = request.session.get('id')
+#     if created:
+       
+#           return redirect('appliedplans', pk=session_id)
+#     else:
+#           return redirect('appliedplans', pk=session_id)
+    
 def add_guide(request, plan_id, guide_id):
     plan = Plan.objects.get(id=plan_id)
     guide = Guide.objects.get(id=guide_id)
@@ -162,11 +176,35 @@ def add_guide(request, plan_id, guide_id):
     guide_request, created = GuideRequest.objects.get_or_create(plan=plan, guide=guide)
     session_id = request.session.get('id')
     if created:
-          messages.success(request, f"The guide {guide.uname} has applied for the plan.")
-          return redirect('appliedplans', pk=session_id)
+        # Get the channel layer for sending WebSocket messages
+        channel_layer = get_channel_layer()
+        
+        # Get the WebSocket group name for the tourist
+        group_name = f'tourist_{plan.tourist.id}'
+        
+        # Send a WebSocket message to the tourist group
+        async_to_sync(channel_layer.group_send)(
+            group_name,
+            {
+                'type': 'guide_request_created',
+                'plan_id': plan.id,
+                'guideid': guide.id,
+                'guide_uname' : guide.uname,
+            }
+        )
+       
+        return redirect('appliedplans', pk=session_id)
     else:
-          return redirect('appliedplans', pk=session_id)
-    
+        return redirect('appliedplans', pk=session_id)
+
+
+
+
+
+
+
+
+
 def YourPlans(request,pk):
     tourist = Tourist.objects.get(id=pk)
     if request.session.get('id') != pk:
@@ -195,3 +233,55 @@ def AppliedPlans(request,pk):
           return HttpResponse('<h1>You are not authorized to view this page !</h1>')
     else:
           return render(request,'Guide/plans.html',{ 'guiderequest':guiderequest})
+    
+
+
+def get_guide_info_ajax(request, guide_id):
+    guide = Guide.objects.get(id=guide_id)
+    guide_info = {
+        'guide_id':guide_id,
+        'uname': guide.uname,
+        'contact': guide.contact,
+        'email': guide.email,
+         'sex'  :guide.sex,
+    }
+    return JsonResponse(guide_info)
+
+
+
+
+
+#24 hours notification showing in tourist page 
+
+
+def get_Tnotifications(request):
+    if request.session.get('id') is not None:  # check if tourist is logged in
+        tourist_id = request.session['id']
+        notifications = TouristNotification.objects.filter(tourist=tourist_id).order_by('-created_at')
+        data = []
+        for notification in notifications:
+            data.append({
+                'message': notification.message,
+                'created_at': timezone.localtime(notification.created_at).strftime('%Y-%m-%d %H:%M:%S'),
+                'expire_at': timezone.localtime(notification.expire_at).strftime('%Y-%m-%d %H:%M:%S'),
+            })
+        return JsonResponse({'notifications': data})
+    else:
+        return JsonResponse({'error': 'Tourist not logged in'})
+    
+
+
+#Drive reauest to guide from tourist
+
+def create_guide_request(request, guide_id):
+    if request.method == 'POST':
+        guide = Guide.objects.get(id=guide_id)
+        tourist_id = request.session.get('id')
+        tourist = Tourist.objects.get(id=tourist_id)
+        tourist_request, created =  TouristRequest.objects.get_or_create(tourist=tourist,guide=guide)
+        if created:
+             return JsonResponse({'status': 'success'})
+        else:
+             return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
