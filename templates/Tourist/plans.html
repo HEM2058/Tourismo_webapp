@@ -143,7 +143,44 @@
 	}
 
 
+/* Style for the fixed header */
+header {
+	  background-color: #fff;
+	  margin: 0 auto;
+	  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+	  position: fixed;
+	  top: 0;
+	  left: 2px;
+	  z-index: 999;
+	  width: 100vw;
+	  padding: 4px;
+	
+	}
+	
+	header button {
+	  width: 100px;
+	  height: 40px;
+	  border: 1px solid black;
+	  border-radius: 10px;
+	  color: blue;
+	  
+	}
+	header button:hover{
+	  
+	  border: 1px solid black;
+	  border-radius: 10px;
+	  background-color: aqua;
+	  
+	  
+	}
+	
+	.course {
+	  margin-top: 50px;
+	  border: 1px solid #ccc;
+	  padding: 25px;
+	}
 
+	
 
 
 
@@ -153,7 +190,16 @@
     </style>
 </head>
 <body>
-  
+	<header>
+		<center>
+			<form action="{% url 'index2' %}" method="get">
+				<button style="width: 100px; height: 40px; border: 1px solid black;">
+					<i class="fas fa-map-marker-alt"></i> Tourismo
+				  </button>
+
+			</form>
+		</center>
+	  </header>
  
     {% if plan %}
    
@@ -182,8 +228,8 @@
 					
 						
 						<h5>Name: {{guide.uname}}</h5>
-						<h5>Contact: {{guide.contact}}</h2>
-						<h5>Email: {{guide.email}}</h2>
+						<h5>Contact: {{guide.contact}}</h5>
+						<h5>Email: {{guide.email}}</h5>
 						<h5>Country: {{guide.country}}</h5>
 						<h5>Sex: {{guide.sex}}</h5>
                    
@@ -230,14 +276,15 @@
         {% endfor %}
 	
     {% else %}
+	
 	<center>
-        <h1>You have not posted any plan yet !</h1>
-    </center>
-   {% endif %}
-   
+		<h1 style="margin: 100px;">You have not applied any plan application till Now !</h1>
+	</center>
+	 {% endif %}
 
 </body>
 </html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 {% if msg %}

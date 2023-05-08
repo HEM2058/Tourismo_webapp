@@ -698,6 +698,59 @@ body.modal-open #publish-plan-form {
 }
 
 
+/* Notification bar */
+.popup-menu {
+  position: absolute;
+  top: 50px; /* adjust as needed */
+  left: 120px;
+  z-index: 1; /* make sure popup is on top of other elements */
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 10px;
+  display: none;
+  width: 200px;
+  height: 400px;
+  overflow-y: scroll; /* add scroll bar if content is larger than the height */
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-content h5 {
+  margin: 0 0 5px;
+}
+
+.notification-time {
+  margin: 0;
+  font-size: 12px;
+  color: #999;
+}
+
+
+.popup-menu.show {
+  display: block;
+  transform: translateX(10px);
+}
+
+
+@media only screen and (max-width: 500px) {
+    .popup-menu {
+        max-height: 300px;
+    }
+
+   
+}
+
 
     </style>
 </head>
@@ -727,7 +780,11 @@ body.modal-open #publish-plan-form {
  <div class="menu-bar" id="menu-bar">
    <!-- Menu items -->
    <a href="#" class="menu-item active"><i class="fas fa-map-marker-alt"></i> Tourismo</a>
-   <a href="#" class="menu-item Notification-btn"><i class="fas fa-bell notification"></i> Notification</a>
+   <!-- <a href="#" class="menu-item Notification-btn"><i class="fas fa-bell notification"></i> Notification</a> -->
+   <a href="#" id="Notification-btn" class="menu-item Notification-btn">
+    <i class="fas fa-bell notification"></i> Notification
+    <span style="font-weight: bold; font-size: 1.2em; color:white ; margin-bottom: 2px; background-color:#7a59f4 ; border-radius: 4px;" class="notification-count"></span>
+  </a>
    <a href="{% url 'appliedplans' pk=request.session.id %}" class="menu-item post-plan-btn"><i class="fas fa-suitcase"></i> Applied Plans</a>
    <!-- <a href="#" class="menu-item history-btn"><i class="fas fa-history"></i> History</a> -->
    <a href="#" class="menu-item setting-btn"><i class="fas fa-cog"></i> Settings</a>
@@ -741,7 +798,23 @@ body.modal-open #publish-plan-form {
        <a href="{% url 'tsignup' %}" class="menu-item user-mode-btn tourist"><i class="fas fa-map-marked-alt"></i> Tourist</a>
        
    </div>
+    <!-- Notification popup -->
+
+    <div class="popup-menu leaflet-control" id="notification-menu">
   
+
+      <div class="notification-item">
+        <div class="notification-content">
+          <h5>Notifications</h5>
+          <p class="message"></p>
+          <p class="notification-time"></p>
+        </div>
+      </div>
+   
+
+      <p class="emptynotification">No notifications found.</p>
+
+</div>
    </div>
    <!-- Search bar -->
 <div id="search-bar">
@@ -831,12 +904,17 @@ body.modal-open #publish-plan-form {
 <script src="{% static 'leaflet-custom marker/leaflet.awesome-markers.min.js' %}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+ <!-- Leaflet.locatecontrol JavaScript -->
+ <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.71.0/dist/L.Control.Locate.min.js"></script>
 <!-- Custom JS -->
 <script>
   var scaleControl;
   var zoomControl;
 
 
+  $(document).ready(function() {
+  
   
   // Create a WebSocket connection to the server
 const ws = new WebSocket('wss://' + window.location.host + '/wss/guide/');
@@ -861,7 +939,6 @@ setInterval(() => {
 }, 30000);
   const preloader = document.querySelector(".preloader-container");
  
-    $(document).ready(function() {
 
 
 
@@ -874,8 +951,27 @@ setInterval(() => {
     zoomControl: false
 });
 
-map.setView([28.2096, 83.9856], 7);
-
+// map.setView([28.2096, 83.9856], 7);
+var defaultView = [20.5937, 78.9629]; 
+var lc = L.control.locate({
+  setView: 'untilPan',  // setView option set to 'once'
+  locateOptions: {
+    maximumAge: 10000,
+    timeout: 10000,
+    enableHighAccuracy: false
+  },
+  onLocationError: function(err) {
+    alert(err.message);
+    map.setView(defaultView, 4);
+  },
+  onLocationFound: function(e) {
+    // Use the user's location to set the center and zoom level of the map
+    map.setView(e.latlng,5);
+  }
+}).addTo(map);
+lc.getContainer().style.display = 'none';
+// Manually start the plugin to check for the user's location
+lc.start();
 
 
 zoomControl= L.control.zoom({
@@ -1025,13 +1121,13 @@ location.addEventListener("click", function(){
   preloader.style.display = "block";
   navigator.geolocation.getCurrentPosition(function(position) {
     L.circle([position.coords.latitude, position.coords.longitude], {
-  color: '#00008B',
-  fillColor: '#00008B',
-  fillOpacity: 0.5,
-  radius: 100,
-  weight: 20,
-  opacity: 0.3,
-  gradient: true
+  // color: '#00008B',
+  // fillColor: '#00008B',
+  // fillOpacity: 0.5,
+  // radius: 100,
+  // weight: 20,
+  // opacity: 0.3,
+  // gradient: true
 }).addTo(map);
 
 var icon = L.AwesomeMarkers.icon({
@@ -1346,14 +1442,92 @@ closeSearchPopup.addEventListener('click', () => {
     }
   });
         
-    });
+});
+
+
+
+    
+    $(document).ready(function() {
+  const notificationBtn = $('#Notification-btn');
+  const notificationMenu = $('#notification-menu');
+  const notificationContent = notificationMenu.find('.notification-content');
+  const notificationCounter = document.querySelector('.notification-count');
+  
+  let counter = 0;
+
+
+  const socket = new WebSocket('wss://' + window.location.host + '/wss/guideNotification/{{ request.session.id }}/');
+  socket.onmessage = function(event) {
+      const message = JSON.parse(event.data);
+      swal({
+  title: "Notification",
+  text: message.message,
+  icon: "success",
+  timer: 3000,
+  buttons: false,
+});
+      counter += 1;
+      notificationCounter.innerHTML = counter;
+      console.log(counter)
+  };
+
+
+  notificationBtn.on('click', function() {
+    notificationMenu.toggleClass('show');
+    if (notificationMenu.hasClass('show')) {
+      notificationCounter.innerHTML = '';
+      notificationContent.html('');
+      $.ajax({
+        url: '/get_guide_notifications/',
+        type: 'GET',
+        success: function(response) {
+          if (response.notifications) {
+            for (const notification of response.notifications) {
+              $('.emptynotification').hide();
+              const notificationItem = $('<div>').addClass('notification-item');
+              const notificationContent = $('<div>').addClass('notification-content');
+              const message = $('<p>').addClass('message').text(notification.message);
+              notificationItem.append(notificationContent.append(message));
+              const notificationTime = $('<p>').addClass('notification-time').text(moment(notification.created_at).fromNow());
+              notificationContent.append(notificationTime);
+              notificationMenu.append(notificationItem);
+            }
+            counter = 0;
+            notificationCounter.innerHTML = '';
+          } else {
+            const noNotification = $('<p>').text('No notifications found.');
+            const emptyNotification = $('.emptynotification');
+            emptyNotification.html(noNotification);
+            notificationCounter.innerHTML = '';
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error(xhr.statusText);
+        }
+      });
+    }
+  });
+
+  $(document).on('click', function(event) {
+    const isClickInside = notificationMenu.is(event.target) || notificationBtn.is(event.target);
+    if (!isClickInside) {
+      notificationMenu.removeClass('show');
+      counter = 0;
+      notificationCounter.innerHTML = '';
+    }
+  });
+});
+
+
 
   // alert message
     {% if msg %}
     swal({
-        icon: 'success',
-        title: 'Great!',
-        text: '{{ msg }}',
+  title: "Welcome !!!",
+  text: '{{msg}}',
+  icon: "success",
+  timer: 2000,
+  buttons: false
     });
 {% endif %}
 

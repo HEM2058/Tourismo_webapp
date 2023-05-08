@@ -73,3 +73,11 @@ class TouristRequest(models.Model):
        tourist = models.ForeignKey(Tourist,on_delete=models.CASCADE)
        guide = models.ForeignKey(Guide,on_delete=models.CASCADE,null=True)
        date_requested = models.DateTimeField(auto_now_add=True)
+      
+
+   
+class GuideNotification(models.Model):
+    guide = models.IntegerField(null=True)
+    message = models.CharField(max_length=255)
+    created_at = models.DateTimeField(default=timezone.now)
+    expire_at = models.DateTimeField()

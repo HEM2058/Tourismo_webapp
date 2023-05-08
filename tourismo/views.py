@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-
+import datetime
 # Create your views here.
 
 def Base(request):
@@ -172,10 +172,13 @@ def create_plan(request,pk):
 def add_guide(request, plan_id, guide_id):
     plan = Plan.objects.get(id=plan_id)
     guide = Guide.objects.get(id=guide_id)
-  
+    tourist_id = plan.tourist.id
     guide_request, created = GuideRequest.objects.get_or_create(plan=plan, guide=guide)
     session_id = request.session.get('id')
     if created:
+        expire_at = timezone.now() + datetime.timedelta(days=1)  # set TTL to 1 day
+        message = f"The {guide.uname} guide has applied to your plan with ID {plan_id}. Guide ID: {guide_id}"
+        TouristNotification.objects.create(tourist=tourist_id,message=message,expire_at=expire_at)
         # Get the channel layer for sending WebSocket messages
         channel_layer = get_channel_layer()
         
@@ -188,7 +191,7 @@ def add_guide(request, plan_id, guide_id):
             {
                 'type': 'guide_request_created',
                 'plan_id': plan.id,
-                'guideid': guide.id,
+                'guide_id': guide.id,
                 'guide_uname' : guide.uname,
             }
         )
@@ -280,8 +283,60 @@ def create_guide_request(request, guide_id):
         tourist = Tourist.objects.get(id=tourist_id)
         tourist_request, created =  TouristRequest.objects.get_or_create(tourist=tourist,guide=guide)
         if created:
+             expire_at = timezone.now() + datetime.timedelta(days=1)  # set TTL to 1 day
+             message = f"The {tourist.uname} tourist has requested for ride.You can contact them at {tourist.contact}."
+             GuideNotification.objects.create(guide=guide.id,message=message,expire_at=expire_at)
+              # Get the channel layer for sending WebSocket messages
+             channel_layer = get_channel_layer()
+        
+              # Get the WebSocket group name for the tourist
+             group_name = f'guide_{guide.id}'
+        
+              # Send a WebSocket message to the tourist group
+             async_to_sync(channel_layer.group_send)(
+              group_name,
+              {
+                'type': 'tourist_request_created',
+                'guide_id': guide.id,
+                'tourist_uname' : tourist.uname,
+                'tourist_contact':tourist.contact,
+            }
+        )
              return JsonResponse({'status': 'success'})
         else:
+                # Get the channel layer for sending WebSocket messages
+             channel_layer = get_channel_layer()
+        
+              # Get the WebSocket group name for the tourist
+             group_name = f'guide_{guide.id}'
+        
+              # Send a WebSocket message to the tourist group
+             async_to_sync(channel_layer.group_send)(
+              group_name,
+              {
+                'type': 'tourist_request_created',
+                'guide_id': guide.id,
+                'tourist_uname' : tourist.uname,
+                 'tourist_contact':tourist.contact,
+            }
+        )
              return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+    
+
+
+def get_Gnotifications(request):
+    if request.session.get('id') is not None:  # check if tourist is logged in
+        guide_id = request.session['id']
+        notifications = GuideNotification.objects.filter(guide=guide_id).order_by('-created_at')
+        data = []
+        for notification in notifications:
+            data.append({
+                'message': notification.message,
+                'created_at': timezone.localtime(notification.expire_at).strftime('%Y-%m-%d %H:%M:%S'),
+                'expire_at': timezone.localtime(notification.expire_at).strftime('%Y-%m-%d %H:%M:%S'),
+            })
+        return JsonResponse({'notifications': data})
+    else:
+        return JsonResponse({'error': 'Tourist not logged in'})  

@@ -785,12 +785,15 @@ body.modal-open #publish-plan-form {
     <script src="{% static 'leaflet-custom marker/leaflet.awesome-markers.min.js' %}"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <!-- Leaflet.locatecontrol JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.71.0/dist/L.Control.Locate.min.js"></script>
     <!-- Custom JS -->
 <script>
   var scaleControl;
   var zoomControl;
   const preloader = document.querySelector(".preloader-container");
- 
+
+
     $(document).ready(function() {
 
 
@@ -805,9 +808,29 @@ body.modal-open #publish-plan-form {
           zoomControl: false
       });
       
-      map.setView([28.2096, 83.9856], 7);
-      
-      
+      // map.setView([28.2096, 83.9856], 7);
+
+      var defaultView = [20.5937, 78.9629]; 
+var lc = L.control.locate({
+  setView: 'untilPan',  // setView option set to 'once'
+  locateOptions: {
+    maximumAge: 10000,
+    timeout: 10000,
+    enableHighAccuracy: false
+  },
+  onLocationError: function(err) {
+    alert(err.message);
+    map.setView(defaultView, 4);
+  },
+  onLocationFound: function(e) {
+    // Use the user's location to set the center and zoom level of the map
+    map.setView(e.latlng,5);
+  }
+}).addTo(map);
+lc.getContainer().style.display = 'none';
+// Manually start the plugin to check for the user's location
+lc.start();
+
       
      zoomControl = L.control.zoom({
           position: 'bottomleft',
@@ -887,13 +910,7 @@ location.addEventListener("click", function(){
   preloader.style.display = "block";
   navigator.geolocation.getCurrentPosition(function(position) {
     L.circle([position.coords.latitude, position.coords.longitude], {
-  color: '#00008B',
-  fillColor: '#00008B',
-  fillOpacity: 0.5,
-  radius: 100,
-  weight: 20,
-  opacity: 0.3,
-  gradient: true
+ 
 }).addTo(map);
 
 var icon = L.AwesomeMarkers.icon({

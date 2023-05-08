@@ -75,7 +75,7 @@ class TouristConsumerNotification(AsyncWebsocketConsumer):
     async def connect(self):
         tourist_id = self.scope['url_route']['kwargs']['tourist_id']
         self.group_name = f'tourist_{tourist_id}'
-
+        
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
@@ -94,11 +94,42 @@ class TouristConsumerNotification(AsyncWebsocketConsumer):
         guide_uname = event['guide_uname']
         tourist_id = self.scope['url_route']['kwargs']['tourist_id']
         message = f"The {guide_uname} guide has applied to your plan with ID {plan_id}. Guide ID: {guide_id}"
-        expire_at = timezone.now() + datetime.timedelta(days=1)  # set TTL to 1 day
-        try:
-          save_notification = sync_to_async(TouristNotification.objects.create)
-          notification = await save_notification(tourist=tourist_id,message=message, expire_at=expire_at)
-        except Exception as e:
-           print(f"Error saving notification: {e}")
+        # expire_at = timezone.now() + datetime.timedelta(days=1)  # set TTL to 1 day
+        # try:
+        #   save_notification = sync_to_async(TouristNotification.objects.create)
+        #   notification = await save_notification(tourist=tourist_id,message=message, expire_at=expire_at)
+        # except Exception as e:
+        #    print(f"Error saving notification: {e}")
+        
+        await self.send(text_data=json.dumps({'message': message}))
+
+
+
+
+#Notification on requesting guide by tourist
+
+
+class GuideConsumerNotification(AsyncWebsocketConsumer):
+    async def connect(self):
+        guide_id = self.scope['url_route']['kwargs']['guide_id']
+        self.group_name = f'guide_{guide_id}'
+        
+        await self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.group_name,
+            self.channel_name
+        )
+
+    async def tourist_request_created(self, event):
+        tourist_uname = event['tourist_uname']
+        tourist_contact = event['tourist_contact']
+        message = f"The {tourist_uname} tourist has requested for ride.You can contact them at {tourist_contact}."
+     
         
         await self.send(text_data=json.dumps({'message': message}))

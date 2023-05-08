@@ -44,6 +44,9 @@ urlpatterns = [
 
     #Drive reauest to the guide
     path('create_guide_request/<int:guide_id>/', views.create_guide_request, name='create_guide_request'),
+
+    #Getting request notiication at guide page
+    path('get_guide_notifications/', views.get_Gnotifications, name='get_guide_notifications'),
 ]
 from django.conf.urls.static import static
 from django.conf import settings
