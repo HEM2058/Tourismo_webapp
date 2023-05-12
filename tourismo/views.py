@@ -17,8 +17,10 @@ def Index1(request):
 def Index2(request):
     return render(request,"index2.html")
 def Index3(request):
-    return render(request,"index3.html")
-
+    plan = Plan.objects.all()
+    return render(request,"index3.html",{'plan':plan})
+def Help(request):
+    return render(request,"help.html")
 
 # tourist user
 def TSignUp(request):

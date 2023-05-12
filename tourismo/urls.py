@@ -8,6 +8,7 @@ urlpatterns = [
     path('Normal_User/',views.Index1,name="index1"),
     path('Tourist_User/',views.Index2,name="index2"),
     path('Guide_User/',views.Index3,name="index3"),
+    path('help/',views.Help,name="help"),
     #tourist user
     path('TouristSignup/',views.TSignUp,name="tsignup"),
     path('TouristSignIn/',views.TSignInPage,name="tsignin"),

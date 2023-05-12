@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -168,7 +169,7 @@ h1 {
 }
 
 h1::before {
-  content: "\f3c5" "  Tourismo";
+  /* content: "\f3c5" "  Tourismo"; */
   font-family: "Font Awesome 5 Free";
   min-height: 100vh;
   font-size: 72px;
@@ -179,7 +180,7 @@ h1::before {
   align-items: center;
   text-align: center;
   line-height: 1.2;
-  animation: fade-in 0.5s ease-in-out forwards;
+  animation: fade-in 2s ease-in-out forwards;
   letter-spacing: 10px;
 }
 
@@ -208,7 +209,7 @@ h1::before {
 
 /* Add this to delay the show-title animation by 2 seconds */
 h1::after {
-  content: "";
+  /* content: ""; */
   font-size: 24px;
   opacity: 0;
   animation: fade-out 2s ease-in-out 2s forwards;
@@ -298,7 +299,11 @@ h1 {
 <body>
   <header>
     <div class="header-container">
-      <h1  ></h1>
+    
+
+   
+      <h1 style="background-image: url('{% static '/Tourismo-01.png' %}'); background-size: 500px 500px;background-repeat: no-repeat; background-position: center;">Tourismo</h1>
+
 
     </div>
     <div class="header1-container">

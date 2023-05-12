@@ -383,8 +383,7 @@ box-shadow: #4016d7;
   padding: 10px;
   z-index: 1000;
   display: none;
-  overflow-y: auto;
-  max-height: 400px;
+ 
 }
 
 #search-popup.show {
@@ -411,6 +410,27 @@ box-shadow: #4016d7;
 .popup-body {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  max-height: 400px;
+}
+.result-item {
+
+font-family: Arial, sans-serif;
+position: relative;
+padding-top: 6px;
+padding-left: 30px;
+}
+
+.result-item::before {
+content: "\f3c5";
+position: absolute;
+left: 5px;
+top: 50%;
+transform: translateY(-50%);
+font-family: "Font Awesome 5 Free";
+font-weight: 900;
+font-size: 1.2em;
+color: black;
 }
 
 .popup-body .search-result {
@@ -822,8 +842,8 @@ Notification popup */
  
    <!-- <a href="#" class="menu-item history-btn"><i class="fas fa-history"></i> History</a> -->
    <a href="#" class="menu-item setting-btn"><i class="fas fa-cog"></i> Settings</a>
-   <a href="#" class="menu-item Help-btn"><i class="fas fa-question-circle"></i> Help</a>
-   <a href="#" class="menu-item Feedback-btn"><i class="fas fa-comment-alt"></i> Feedback</a>
+   <a href="{% url 'help' %}" class="menu-item Help-btn"><i class="fas fa-question-circle"></i> Help</a>
+   <!-- <a href="#" class="menu-item Feedback-btn"><i class="fas fa-comment-alt"></i> Feedback</a> -->
 
    <!-- User Mode buttons -->
    <div class="user-mode">
