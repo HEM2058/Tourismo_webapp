@@ -48,6 +48,19 @@ urlpatterns = [
 
     #Getting request notiication at guide page
     path('get_guide_notifications/', views.get_Gnotifications, name='get_guide_notifications'),
+
+    #Hotel information
+    path('addhotel/',views.addHotel,name='addhotel'),
+    path('hindex/',views.Hindex,name='hindex'),
+    path('hcontact/',views.Hcontact,name='hcontact'),
+    path('hroomdetail/',views.RoomDetail,name='roomdetail'),
+    path('savehotel/',views.create_hotel,name='savehotel'),
+
+
+    #OSM filter using overpass api
+    path('hotels/', views.hotel_list, name='hotel_list'),
+    path('atms/', views.atm_list, name='atm_list'),
+
 ]
 from django.conf.urls.static import static
 from django.conf import settings

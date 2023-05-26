@@ -6,6 +6,8 @@ from django.http import JsonResponse
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import datetime
+import requests
+import json
 # Create your views here.
 
 def Base(request):
@@ -342,3 +344,171 @@ def get_Gnotifications(request):
         return JsonResponse({'notifications': data})
     else:
         return JsonResponse({'error': 'Tourist not logged in'})  
+    
+
+
+
+
+#Hotel informatio
+def addHotel(request):
+    return render(request,'Guide/hotel.html')
+def Hindex(request):
+    return render(request,"Tourist/hotel/index.html")
+
+def Hcontact(request):
+    return render(request,"Tourist/hotel/contact.html")
+   
+def RoomDetail(request):
+    return render(request,"Tourist/hotel/room-details.html")
+
+
+def create_hotel(request):
+    if request.method == 'POST':
+        # Get the form input values from the request
+        name = request.POST.get('hotel-name')
+        video_intro = request.FILES.get('video-intro')
+        room_size = request.POST.get('room-size')
+        room_prices_per_night = request.POST.get('room-prices')
+        room_details = request.POST.get('room-details')
+        room_images = request.FILES.getlist('room-images')
+        tour_package_images = request.FILES.getlist('tour-package-images')
+        food_and_drink_images = request.FILES.getlist('food-drink-images')
+
+        # Create a new Hotel instance
+        hotel = Hotel(
+            name=name,
+            video_intro=video_intro,
+            room_size=room_size,
+            room_prices_per_night=room_prices_per_night,
+            room_details=room_details
+        )
+
+        # Save the hotel object to the database
+        hotel.save()
+
+        # Save room images
+        for image in room_images:
+            hotel.room_images.create(image=image)
+
+        # Save tour package images
+        for image in tour_package_images:
+            hotel.tour_package_images.create(image=image)
+
+        # Save food and drink images
+        for image in food_and_drink_images:
+            hotel.food_and_drink_images.create(image=image)
+
+        # Redirect to a success page or perform any other desired action
+        return redirect('index3')
+
+    return render(request, 'Guide/hotel.html')
+
+
+
+#OSM overpass api to filter data
+
+
+#for hotel
+
+
+
+def retrieve_hotel_data(bbox):
+    print("+++++++++++++++++++++======================================================================================")
+    print(bbox)
+    overpass_url = "https://overpass-api.de/api/interpreter"
+    query = """
+    [out:json][timeout:25];
+    // gather results
+    (
+     // query part for: “tourism=hotel”
+  node["tourism"="hotel"]({{bbox}});
+  way["tourism"="hotel"]({{bbox}});
+  relation["tourism"="hotel"]({{bbox}});
+    );
+    // print results
+    out body;
+>;
+out skel qt;
+    """
+
+    formatted_query = query.replace("{{bbox}}", bbox)
+    print(formatted_query)
+    response = requests.get(overpass_url, params={"data": formatted_query})
+    print("=======================================")
+    print(response)
+    if response.status_code == 200:
+        print("Inside if statement")
+        data = response.json()
+        print("===================data======================")
+        print(data)
+        hotel = data["elements"]
+        # Print the number of hotels
+        print("Number of hotels:", len(hotel))
+        return hotel
+    else:
+        return []
+
+def hotel_list(request):
+    if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        # Process the AJAX request and retrieve the bounding box data
+        bbox = request.POST.get('bbox')
+        print("======================================================================================")
+        print(bbox)
+        # Retrieve hotel data using the Overpass API
+        hotels = retrieve_hotel_data(bbox)
+
+        return JsonResponse(hotels, safe=False)
+
+    return JsonResponse({'error': 'Invalid request.'})
+
+
+#for atms
+
+def retrieve_atm_data(bbox):
+    print("+++++++++++++++++++++======================================================================================")
+    print(bbox)
+    overpass_url = "https://overpass-api.de/api/interpreter"
+    query = """
+    [out:json][timeout:25];
+    // gather results
+    (
+     // query part for: “amenity=atm”
+  node["amenity"="atm"]({{bbox}});
+  way["amenity"="atm"]({{bbox}});
+  relation["amenity"="atm"]({{bbox}});
+    );
+    // print results
+    out body;
+>;
+out skel qt;
+    """
+
+    formatted_query = query.replace("{{bbox}}", bbox)
+    print(formatted_query)
+    response = requests.get(overpass_url, params={"data": formatted_query})
+    print("=======================================")
+    print(response)
+    if response.status_code == 200:
+        print("Inside if statement")
+        data = response.json()
+        print("===================data======================")
+        print(data)
+        atms = data["elements"]
+        # Print the number of hotels
+        print("Number of hotels:", len(atms))
+        return atms
+    else:
+        return []
+
+def atm_list(request):
+    if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        # Process the AJAX request and retrieve the bounding box data
+        bbox = request.POST.get('bbox')
+        print("======================================================================================")
+        print(bbox)
+        # Retrieve hotel data using the Overpass API
+        hotels = retrieve_atm_data(bbox)
+
+        return JsonResponse(hotels, safe=False)
+
+    return JsonResponse({'error': 'Invalid request.'})

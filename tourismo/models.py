@@ -81,3 +81,28 @@ class GuideNotification(models.Model):
     message = models.CharField(max_length=255)
     created_at = models.DateTimeField(default=timezone.now)
     expire_at = models.DateTimeField()
+
+
+#Hotel model
+
+class RoomImage(models.Model):
+    hotel = models.ForeignKey('Hotel', on_delete=models.CASCADE, related_name='room_images')
+    image = models.ImageField(upload_to='room_images/', max_length=100)
+
+class TourPackageImage(models.Model):
+    hotel = models.ForeignKey('Hotel', on_delete=models.CASCADE, related_name='tour_package_images')
+    image = models.ImageField(upload_to='tour_package_images/', max_length=100)
+
+class FoodAndDrinkImage(models.Model):
+    hotel = models.ForeignKey('Hotel', on_delete=models.CASCADE, related_name='food_and_drink_images')
+    image = models.ImageField(upload_to='food_and_drink_images/', max_length=100)
+
+
+
+class Hotel(models.Model):
+    guide = models.ForeignKey(Guide, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    video_intro = models.FileField(upload_to='hotel_videos/', max_length=100, null=True)
+    room_size = models.CharField(max_length=100)
+    room_prices_per_night = models.DecimalField(max_digits=8, decimal_places=2)
+    room_details = models.TextField()

@@ -751,7 +751,7 @@ Notification popup */
 /* Notification bar */
 .popup-menu {
   position: absolute;
-  top: 50px; /* adjust as needed */
+  top: 80px; /* adjust as needed */
   left: 120px;
   z-index: 1; /* make sure popup is on top of other elements */
   background-color: white;
@@ -800,6 +800,98 @@ Notification popup */
 
    
 }
+@media only screen and (max-width: 640px){
+.leaflet-routing-container {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 80%;
+    height: 60%;
+}
+}
+.leaflet-routing-container{
+  background-color: rgb(237, 250, 250);
+  border: 3px solid black;
+  top: 100px;
+
+  border-radius: 5px;
+}
+/* 
+Filter search */
+#list-items {
+  position: absolute;
+  top: 10px; /* Adjust the top position as needed */
+  left: 100px; /* Adjust the left position as needed */
+  z-index: 1000; /* Ensure the list appears above the map */
+  align-items: center; /* Center items vertically */
+  border-radius: 4px;
+  padding: 10px;
+}
+
+#list-items ul {
+  display: flex; /* Add flex display */
+  flex-direction: row; /* Align items in a row */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#list-items li {
+  display: flex; /* Add flex display */
+  align-items: center; /* Center content vertically */
+  background-color: white;
+  border: 2px solid whitesmoke;
+  border-radius: 8px;
+  padding: 5px;
+  margin-right: 10px; /* Add space between list items */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add box shadow effect */
+}
+
+#list-items li:last-child {
+  margin-right: 0; /* Remove margin from the last item */
+}
+
+#list-items li i {
+  margin-right: 8px; /* Add spacing between the icon and text */
+}
+
+
+/* Media query for small devices */
+@media screen and (max-width: 900px) {
+  #list-items {
+    position: fixed;
+    top: 80px;
+    left: 200px;
+    right: 0px;
+    display: flex;
+    align-items: flex-start;
+    z-index: 1000;
+    border-radius: 4px;
+    padding: 10px;
+  }
+
+  #list-items ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex; /* Add flex display */
+    flex-direction: row; /* Align items in a row */
+    overflow-x: scroll; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent line breaks */
+  }
+
+  #list-items li {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 2px solid whitesmoke;
+    border-radius: 8px;
+    padding: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+   
+  }
+}
+
 
     </style>
 </head>
@@ -871,6 +963,18 @@ Notification popup */
   </div>
   
    </div>
+      <!-- List items -->
+      <div id="list-items">
+        <ul>
+          <li><i class="fas fa-hotel"></i>Hotel</li>
+          <li><i class="fas fa-money-bill"></i>ATM</li>
+          <li><i class="fas fa-utensils"></i>Restaurants</li>
+          <li><i class="fas fa-university"></i>Bank</li>
+          <li><i class="fas fa-hospital"></i>Hospital</li>
+          <li><i class="fas fa-restroom"></i>Toilet</li>
+          <!-- Add more list items here -->
+        </ul>
+      </div>
    <!-- Search bar -->
 <div id="search-bar">
   <i id="direction-icon" class="fas fa-directions"></i>

@@ -675,6 +675,206 @@ body.modal-open #publish-plan-form {
   z-index: 9999;
 }
 
+@media only screen and (max-width: 640px){
+.leaflet-routing-container {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 80%;
+    height: 60%;
+}
+}
+.leaflet-routing-container{
+  background-color: rgb(237, 250, 250);
+  border: 3px solid black;
+  top: 100px;
+
+  border-radius: 5px;
+}
+
+/* Filter search */
+#list-items {
+  position: absolute;
+  top: 10px; /* Adjust the top position as needed */
+  left: 100px; /* Adjust the left position as needed */
+  z-index: 1000; /* Ensure the list appears above the map */
+  align-items: center; /* Center items vertically */
+  border-radius: 4px;
+  padding: 10px;
+}
+
+#list-items ul {
+  display: flex; /* Add flex display */
+  flex-direction: row; /* Align items in a row */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#list-items li {
+  display: flex; /* Add flex display */
+  align-items: center; /* Center content vertically */
+  background-color: white;
+  border: 2px solid whitesmoke;
+  border-radius: 8px;
+  padding: 5px;
+  margin-right: 10px; /* Add space between list items */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add box shadow effect */
+}
+
+#list-items li:last-child {
+  margin-right: 0; /* Remove margin from the last item */
+}
+
+#list-items li i {
+  margin-right: 8px; /* Add spacing between the icon and text */
+}
+
+
+/* Media query for small devices */
+@media screen and (max-width: 900px) {
+  #list-items {
+    position: fixed;
+    top: 80px;
+    left: 200px;
+    right: 0px;
+    display: flex;
+    align-items: flex-start;
+    z-index: 1000;
+    border-radius: 4px;
+    padding: 10px;
+  }
+
+  #list-items ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex; /* Add flex display */
+    flex-direction: row; /* Align items in a row */
+    overflow-x: scroll; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent line breaks */
+  }
+
+  #list-items li {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 2px solid whitesmoke;
+    border-radius: 8px;
+    padding: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+   
+  }
+}#list-items button {
+  text-decoration: none; /* Remove underline decoration */
+  margin-left: 10px; /* Add space between list items */
+  color: black;
+  border: none;
+      background-color: transparent;
+      padding: 0;
+      cursor: pointer;
+      outline: none;
+}
+.active {
+      color: rgb(217, 224, 6); /* Change the color to your desired active state color */
+    }
+
+
+.popup-direction-icon {
+  margin-top: 5px;
+  text-align: center;
+ height: 40px;
+}
+
+.popup-direction-icon i {
+   
+  color: blue;
+  transition: color 0.3s ease;
+}
+
+.popup-direction-icon i:hover {
+  color: rgb(255, 0, 98);
+}
+#popupContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%; /* Adjust the width as needed */
+  max-width: 400px; /* Set a maximum width if desired */
+  height: 100%;
+  z-index: 9999; /* Set a high z-index value to ensure the popup appears on top */
+  pointer-events: none; /* Prevents the popup from capturing click events */
+}
+
+@media screen and (max-width: 600px) {
+  /* Apply 100% width on small devices */
+  #popupContainer {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+#popupBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: #ffffff;
+  overflow: hidden;
+  transition: height 0.3s ease-in-out;
+  pointer-events: auto; /* Allow capturing click events on the popup bar */
+}
+
+#popupBar.expanded {
+  height: 30vh; /* Adjust the initial height based on your needs */
+}
+
+#popupContainer .popupContentContainer {
+  height: calc(100% - 40px); /* Adjust the height as needed */
+  overflow-y: auto; /* Enable vertical scrolling within the container */
+}
+
+#menuContent {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align content horizontally */
+}
+
+#menuContent * {
+  pointer-events: none; /* Disable pointer events for all elements within the menuContent */
+}
+
+#buttonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#buttonContainer button {
+  margin: 0 5px;
+  
+  padding: 8px 16px;
+  border: none;
+  border-radius: 10px;
+  background-color: #2196f3;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#buttonContainer button:hover {
+  background-color: #0e8af5;
+}
+
+#popupContainer.overlay {
+  pointer-events: auto; /* Allow capturing click events on the popup area */
+}
+
 
 
 
@@ -710,6 +910,8 @@ body.modal-open #publish-plan-form {
 <a href="#" class="menu-item active"><i class="fas fa-map-marker-alt"></i> Tourismo</a>
 <a href="{% url 'help' %}" class="menu-item Help-btn"><i class="fas fa-question-circle"></i> Help</a>
 <!-- <a href="#" class="menu-item Feedback-btn"><i class="fas fa-comment-alt"></i> Feedback</a> -->
+<a href="{% url 'hindex' %}" class="menu-item Help-btn"><i class="fas fa-bed"></i> Hotel</a>
+
 
     <!-- User Mode buttons -->
     <div class="user-mode">
@@ -720,6 +922,18 @@ body.modal-open #publish-plan-form {
     </div>
   
    </div>
+      <!-- List items -->
+      <div id="list-items">
+        <ul>
+          <button id="hotel-button"><li><i class="fas fa-hotel"></i>Hotel</li></button>
+          <button id="atm-button"><li><i class="fas fa-money-bill"></i>ATM</li></button>
+          <button><li><i class="fas fa-utensils"></i>Restaurants</li></button>
+          <button><li><i class="fas fa-university"></i>Bank</li></button>
+          <button><li><i class="fas fa-hospital"></i>Hospital</li></button>
+          <button><li><i class="fas fa-restroom"></i>Toilet</li></button>
+          <!-- Add more list items here -->
+        </ul>
+      </div>
    <!-- Search bar -->
 <div id="search-bar">
   <i id="direction-icon" class="fas fa-directions"></i>
@@ -772,7 +986,7 @@ body.modal-open #publish-plan-form {
    <div class="search-results-footer">
      <span id="search-results-count"></span>
      <div class="search-results-slider">
-       <div class="slider-track">
+       <div  class="slider-track">
          <div class="slider-thumb"></div>
        </div>
      </div>
@@ -781,8 +995,25 @@ body.modal-open #publish-plan-form {
   </div>
    
 
-
-
+  <div id="popupContainer">
+    <div id="popupBar">
+      <div class="popupContentContainer">
+        <div id="menuContent">
+          <!-- Marker information will be dynamically added here -->
+        </div>
+      </div>
+      <div id="buttonContainer">
+        <button id="getDirectionsButton">Get Directions</button>
+        <button id="shareButton">Share</button>
+      </div>
+    </div>
+  </div
+  
+  
+  
+  
+  
+  
 
   
   
@@ -808,7 +1039,10 @@ body.modal-open #publish-plan-form {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <!-- Leaflet.locatecontrol JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.71.0/dist/L.Control.Locate.min.js"></script>
-    <!-- Custom JS -->
+    
+  <!-- compass  script -->
+  <script src="{% static '/leaflet-rotate-src.js' %}"></script>
+  <!-- Custom JS -->
 <script>
   var scaleControl;
   var zoomControl;
@@ -820,14 +1054,100 @@ body.modal-open #publish-plan-form {
 
 
 
+
+
       
         // Initialize map
-        
-        var map = L.map('map', {
-          // maxZoom: 20,
-          // minZoom: 6,
-          zoomControl: false
-      });
+        var basemaps = [L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: "abcd",
+                    maxZoom: 20,
+                    minZoom: 0,
+                    label: "OSM layer"
+                   
+}),
+
+googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3'],
+  
+                    maxZoom: 20,
+                    minZoom: 0,
+                    label: "Google satellite"
+}),
+googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3'],
+                    maxZoom: 20,
+                    minZoom: 0,
+                    label: "Google Hybrid"
+}),
+googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3'],
+    
+                    maxZoom: 20,
+                    minZoom: 0,
+                    label: "Google street"
+}),
+osm = L.tileLayer(
+  "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
+  {
+    attribution: "CyclOSM | Map data: © OpenStreetMap contributors",
+    subdomains: "abcd",
+                    maxZoom: 20,
+                    minZoom: 0,
+                    label: "CyclOSM"
+  }
+)
+
+          
+            
+          
+            ];
+    
+                var map = L.map('map', {
+				center: [55, 10],
+				zoom: 2,
+				layers: [basemaps[0]],
+				// worldCopyJump: true,
+				// preferCanvas: false,
+				zoomAnimation: false, /* DEBUG: L.Renderer._updateTransform() */
+				rotate: true,
+        zoomControl: false,
+        rotateControl: false, // Disable the default rotate control
+			
+				bearing: 30,
+				// attributionControl: false,
+				// zoomControl: false,
+				
+				// trackContainerMutation: false,
+				// shiftKeyRotate: false,
+				// touchGestures: true,
+				touchRotate: true,
+				// touchZoom: true
+			});
+      // Add the rotate control positioned on the top right corner
+// Add the rotate control
+var customRotateControl = L.control.rotate({
+  position: 'topright' // Set the desired position for the control
+}).addTo(map);
+// Adjust the position of the rotate control using CSS
+var rotateControlContainer = customRotateControl.getContainer();
+rotateControlContainer.style.marginTop = '400px'; // Adjust the top margin as needed
+rotateControlContainer.style.marginRight = '30px'; // Adjust the right margin as needed
+
+            map.addControl(
+                L.control.basemaps({
+                    basemaps: basemaps,
+                    tileX: 0,
+                    tileY: 0,
+                    tileZ: 1
+                })
+            );
+
+  
+
       
       // map.setView([28.2096, 83.9856], 7);
 
@@ -853,73 +1173,216 @@ lc.getContainer().style.display = 'none';
 lc.start();
 
       
-     zoomControl = L.control.zoom({
-          position: 'bottomleft',
-          size:'20px'
-          
-      }).addTo(map); 
+   
+var customZoomControl = L.control.zoom({
+  position: 'bottomleft',
+  zoomInText: '+', // Customize the zoom in text
+  zoomOutText: '-', // Customize the zoom out text
+  zoomInTitle: 'Zoom In', // Customize the zoom in tooltip
+  zoomOutTitle: 'Zoom Out' // Customize the zoom out tooltip
+}).addTo(map);
+zoomControl = customZoomControl
+// Adjust the size and position of the zoom control using CSS
+var zoomControlContainer = customZoomControl.getContainer();
+zoomControlContainer.style.width = '20px'; // Set the width of the container
+zoomControlContainer.style.height = '20px'; // Set the height of the container
+zoomControlContainer.style.marginBottom = '150px'; // Adjust the bottom margin as needed
+zoomControlContainer.style.marginLeft = '10px'; // Adjust the left margin as needed
+zoomControlContainer.style.borderRadius = '50%'; // Apply border radius to create a circular button
+ 
       
       
       scaleControl = L.control.scale({metric: true}).addTo(map);     
               // Add tile layer
       
    
-  var basemaps = [
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-          subdomains: "abcd",
-                          maxZoom: 20,
-                          minZoom: 0,
-                          label: "OSM layer"
-                         
-      }),
-      googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-          maxZoom: 20,
-          subdomains:['mt0','mt1','mt2','mt3'],
-        
-                          maxZoom: 20,
-                          minZoom: 0,
-                          label: "Google satellite"
-      }),
-      googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
-          maxZoom: 20,
-          subdomains:['mt0','mt1','mt2','mt3'],
-                          maxZoom: 20,
-                          minZoom: 0,
-                          label: "Google Hybrid"
-      }),
-      googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
-          maxZoom: 20,
-          subdomains:['mt0','mt1','mt2','mt3'],
-          
-                          maxZoom: 20,
-                          minZoom: 0,
-                          label: "Google street"
-      }),
+  // Event listener for zoom level changes and dragging
+var hotelLayerGroup = L.layerGroup();
+var atmLayerGroup = L.layerGroup();
+// Get the hotel-button element
+var hotel_click = document.querySelector("#hotel-button");
+var hotelButtonState = false; // Button state variable
+
+function hotelButtonClickHandler() {
+  // Toggle button state
+  hotelButtonState = !hotelButtonState;
+
+  if (hotelButtonState) {
+    // Add event listener for map zoom and drag
+    map.on('zoomend dragend', function() {
+      zoomLevel = map.getZoom();
+      bounds = map.getBounds();
+      var southWest = bounds.getSouthWest();
+      var northEast = bounds.getNorthEast();
+      var minLon = southWest.lng;
+      var minLat = southWest.lat;
+      var maxLon = northEast.lng;
+      var maxLat = northEast.lat;
+      var bbox = minLat + ',' + minLon + ',' + maxLat + ',' + maxLon;
+
+      // Send AJAX request to retrieve hotel data
+      $.ajax({
+        url: '/hotels/',
+        type: 'POST',
+        data: { bbox: bbox },
+        success: function(data) {
+          displayHotelsOnMap(data);
+        },
+        error: function(xhr, status, error) {
+          console.log('An error occurred:', error);
+        }
+      });
+    });
+  } else {
+    // Remove event listener from map
+    map.off('zoomend dragend');
+    hotelLayerGroup.clearLayers();
+  }
+}
+
+// Add event listener for hotel button click
+hotel_click.addEventListener('click', hotelButtonClickHandler);
+
+function displayHotelsOnMap(data) {
+  hotelLayerGroup.clearLayers();
+  atmLayerGroup.clearLayers();
+
+  // Process the data and display hotel popups on the map
+  for (var i = 0; i < data.length; i++) {
+    var hotel = data[i];
+    var icon = L.AwesomeMarkers.icon({
+      icon: 'fas fa-hotel',
+      markerColor: 'green',
+      iconColor: 'white',
+      prefix: 'fa'
+    });
+
+    var marker = L.marker([hotel.lat, hotel.lon], { icon: icon })
+      .addTo(map)
+      .bindPopup(
+        '<strong>' + hotel.tags.name + '</strong><br>' +
+        'Phone: ' + hotel.tags.phone
+      );
+
+    hotelLayerGroup.addLayer(marker);
+  }
+
+  // Add the layer group to the map
+  hotelLayerGroup.addTo(map);
+}
+  
+// Get the atm-button element
+var atm_click = document.querySelector("#atm-button");
+var atmButtonState = false; // Button state variable
+
+function atmButtonClickHandler() {
+  // Toggle button state
+  atmButtonState = !atmButtonState;
+
+  if (atmButtonState) {
+
+map.on('zoomend dragend', function() {
+  zoomLevel = map.getZoom();
+  bounds = map.getBounds();
+  console.log(bounds)
+  var southWest = bounds.getSouthWest();
+  var northEast = bounds.getNorthEast();
+  console.log(southWest)
+  console.log(northEast)
+  // var width = map.getBounds().getEast() - map.getBounds().getWest();
+  // var height = map.getBounds().getNorth() - map.getBounds().getSouth();
+  var minLon = southWest.lng;
+  var minLat = southWest.lat;
+  var maxLon = northEast.lng;
+  var maxLat = northEast.lat;
+  
+
+// minimum latitude, minimum longitude, maximum latitude, maximum longitude 
+  var bbox = minLat + ',' + minLon + ',' + maxLat + ',' + maxLon;
+  console.log(zoomLevel);
+  console.log(bbox);
+  // Send AJAX request to retrieve hotel data
+  $.ajax({
+    url: '/atms/',
+    type: 'POST',
+    data: { bbox: bbox },
+    success: function(data) {
+      console.log(data)
      
-      osmcyclo =  L.tileLayer(
-        "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
-        {
-          attribution: "CyclOSM | Map data: © OpenStreetMap contributors",
-          subdomains: "abcd",
-                          maxZoom: 20,
-                          minZoom: 0,
-                          label: "CyclOSM"
-        })   
-                  
-                
-                  ];
-      
-                  map.addControl(
-                      L.control.basemaps({
-                          basemaps: basemaps,
-                          tileX: 0,
-                          tileY: 0,
-                          tileZ: 1
-                      })
-                  );
-      
-        
+      displayAtmsOnMap(data);
+    },
+    error: function(xhr, status, error) {
+      console.log('An error occurred:', error);
+    }
+      });
+    });
+  } else {
+    // Remove event listener from map
+    map.off('zoomend dragend');
+    atmLayerGroup.clearLayers();
+  }
+}
+// Add event listener for hotel button click
+atm_click.addEventListener('click', atmButtonClickHandler);
+
+ // Create a layer group to store the ATM markers
+ function displayAtmsOnMap(data) {
+  atmLayerGroup.clearLayers();
+  hotelLayerGroup.clearLayers();
+
+  for (var i = 0; i < data.length; i++) {
+    var atm = data[i];
+    var icon = L.AwesomeMarkers.icon({
+      icon: 'fas fa-money-bill',
+      markerColor: 'green',
+      iconColor: 'white',
+      prefix: 'fa'
+    });
+
+    var marker = L.marker([atm.lat, atm.lon], { icon: icon })
+      .addTo(map)
+      .on('click', (function(atm) {
+        return function() {
+          var menuContent = document.getElementById('menuContent');
+          menuContent.innerHTML = '';
+
+          if (atm.tags) {
+            if (Array.isArray(atm.tags)) {
+              atm.tags.forEach(function(tag) {
+                var tagElement = document.createElement('div');
+                tagElement.textContent = tag;
+                menuContent.appendChild(tagElement);
+              });
+            } else if (typeof atm.tags === 'object') {
+              for (var key in atm.tags) {
+                if (atm.tags.hasOwnProperty(key)) {
+                  var tagElement = document.createElement('div');
+                  tagElement.innerHTML = '<span style="font-weight: bold;">' + key + ':</span> ' + atm.tags[key];
+                  menuContent.appendChild(tagElement);
+                }
+              }
+            }
+          } else {
+            var errorMessage = document.createElement('div');
+            errorMessage.textContent = 'No tags available';
+            menuContent.appendChild(errorMessage);
+          }
+
+          document.getElementById('popupBar').classList.add('expanded');
+        };
+      })(atm));
+
+    atmLayerGroup.addLayer(marker);
+  }
+
+  atmLayerGroup.addTo(map);
+}
+
+
+  
+    
+
+
       
 
 
@@ -1241,8 +1704,38 @@ document.getElementById('menu-btn').addEventListener('click', function() {
   }
 });
 
-        
-    });
+});
+// Get all list items
+const listItems = document.querySelectorAll('#list-items li');
+
+// Variable to store the currently active list item
+let activeListItem = null;
+
+// Add click event listener to each list item
+listItems.forEach(item => {
+  item.addEventListener('click', function() {
+    // Check if the clicked list item is already active
+    if (this === activeListItem) {
+      // Remove 'active' class from the clicked list item
+      this.classList.remove('active');
+      activeListItem = null; // Reset the active list item
+    } else {
+      // Remove 'active' class from all list items
+      
+      listItems.forEach(item => item.classList.remove('active'));
+      
+
+      // Add 'active' class to the clicked list item
+      this.classList.add('active');
+      activeListItem = this; // Set the clicked list item as active
+    }
+  });
+});
+
+
+
+//OSM data get end       
+   
 
     
 
